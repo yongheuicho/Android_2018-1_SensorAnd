@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected BluetoothAdapter bthAdapter;
     protected BluetoothManager bthManager;
     protected BthReceiver bthReceiver;
+    protected AceBluetoothSerialService bthService;
     protected Button btFind, btConnect, btRead, btWrite;
     protected EditText edWrite;
     protected TextView txRead;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(bthReceiver, intentFilter);
         intentFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(bthReceiver, intentFilter);
+
+        bthService = new AceBluetoothSerialService(this, bthAdapter);
     }
 
     @Override
