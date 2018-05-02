@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private static final int BTH_ENABLE = 1010;
+    protected String sBthName = "yhcho";
     protected BluetoothAdapter bthAdapter;
     protected BluetoothManager bthManager;
     protected BthReceiver bthReceiver;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        bthReceiver = new BthReceiver();
+        bthReceiver = new BthReceiver(sBthName);
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(bthReceiver, intentFilter);
     }
