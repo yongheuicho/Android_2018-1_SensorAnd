@@ -2,6 +2,7 @@ package kr.ac.mokwon.ice.sensorand;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int BTH_ENABLE = 1010;
     protected BluetoothAdapter bthAdapter;
     protected BluetoothManager bthManager;
     protected Button btFind, btConnect, btRead, btWrite;
@@ -20,6 +22,16 @@ public class MainActivity extends AppCompatActivity {
 
     protected void showMsg(String str) {
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == BTH_ENABLE) {
+            if (resultCode == RESULT_OK)
+                showMsg("Bluetooth is enabled by a user.");
+            else showMsg("Bluetooth is disable by a user.");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -34,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
         if (bthAdapter == null) return;
         showMsg("BluetoothAdapter is found.");
         if (!bthAdapter.isEnabled()) {
-
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(intent, BTH_ENABLE);
             showMsg("Bluetooth is not enabled.");
         } else showMsg("Bluetooth is enabled.");
 
