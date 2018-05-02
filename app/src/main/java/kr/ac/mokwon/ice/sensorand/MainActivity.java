@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         bthReceiver = new BthReceiver(sBthName);
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(bthReceiver, intentFilter);
+        intentFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(bthReceiver, intentFilter);
     }
 
     @Override
