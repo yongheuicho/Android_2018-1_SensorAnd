@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity {
     private static final int BTH_ENABLE = 1010;
     protected String sBthName = "yhcho";
@@ -77,9 +79,13 @@ public class MainActivity extends AppCompatActivity {
         btConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bthDevice = bthAdapter.getRemoteDevice(bthReceiver.sAddress);
-                bthService.connect(bthDevice);
-                showMsg(sBthName + " is connected.");
+                if (bthReceiver.sAddress.isEmpty()) {
+                    showMsg("MAC address is empty.");
+                } else {
+                    bthDevice = bthAdapter.getRemoteDevice(bthReceiver.sAddress);
+                    bthService.connect(bthDevice);
+                    showMsg(sBthName + " is connected.");
+                }
             }
         });
 
@@ -88,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(bthReceiver, intentFilter);
         intentFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(bthReceiver, intentFilter);
+
+        Set<BluetoothDevice> setDevice = bthAdapter.getBondedDevices();
+        if (setDevice != null) {
+            for (BluetoothDevice device : setDevice) {
+                if (device.getName().equalsIgnoreCase(sBthName)) {
+                    bthReceiver.sAddress = device.getAddress();
+                    showMsg("MAC address of " + sBthName + "is set.");
+                }
+            }
+        }
 
         bthService = new AceBluetoothSerialService(this, bthAdapter);
     }

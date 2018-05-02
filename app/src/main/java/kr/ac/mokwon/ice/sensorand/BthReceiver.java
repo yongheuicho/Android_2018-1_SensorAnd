@@ -12,6 +12,7 @@ public class BthReceiver extends BroadcastReceiver {
 
     public BthReceiver(String sName) {
         this.sName = sName;
+        this.sAddress = "";
     }
 
     @Override
