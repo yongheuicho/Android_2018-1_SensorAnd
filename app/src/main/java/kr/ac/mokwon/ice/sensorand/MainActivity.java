@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int BTH_ENABLE = 1010;
     protected String sBthName = "yhcho";
     protected BluetoothAdapter bthAdapter;
+    protected BluetoothDevice bthDevice;
     protected BluetoothManager bthManager;
     protected BthReceiver bthReceiver;
     protected AceBluetoothSerialService bthService;
@@ -70,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
                 if (bthAdapter.isDiscovering()) bthAdapter.cancelDiscovery();
                 bthAdapter.startDiscovery();
                 showMsg("Discovering...");
+            }
+        });
+
+        btConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bthDevice = bthAdapter.getRemoteDevice(bthReceiver.sAddress);
+                bthService.connect(bthDevice);
+                showMsg(sBthName + " is connected.");
             }
         });
 
