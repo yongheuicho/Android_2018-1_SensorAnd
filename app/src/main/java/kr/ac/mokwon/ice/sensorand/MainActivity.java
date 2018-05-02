@@ -89,6 +89,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btWrite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = edWrite.getText().toString();
+                bthService.println(str);
+            }
+        });
+
+        btRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String str = bthService.getSerialInput();
+                txRead.setText(str);
+            }
+        });
+
         bthReceiver = new BthReceiver(sBthName);
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(bthReceiver, intentFilter);
