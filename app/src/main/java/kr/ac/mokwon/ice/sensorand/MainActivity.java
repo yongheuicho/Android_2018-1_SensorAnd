@@ -1,12 +1,15 @@
 package kr.ac.mokwon.ice.sensorand;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int BTH_ENABLE = 1010;
     protected BluetoothAdapter bthAdapter;
     protected BluetoothManager bthManager;
+    protected BthReceiver bthReceiver;
     protected Button btFind, btConnect, btRead, btWrite;
     protected EditText edWrite;
     protected TextView txRead;
@@ -57,5 +61,25 @@ public class MainActivity extends AppCompatActivity {
         btWrite = (Button) findViewById(R.id.btWrite);
         edWrite = (EditText) findViewById(R.id.edWrite);
         txRead = (TextView) findViewById(R.id.txRead);
+
+        btFind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bthAdapter.isDiscovering()) bthAdapter.cancelDiscovery();
+                bthAdapter.startDiscovery();
+                showMsg("Discovering...");
+            }
+        });
+
+        bthReceiver = new BthReceiver();
+        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(bthReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (bthAdapter.isDiscovering()) bthAdapter.cancelDiscovery();
+        unregisterReceiver(bthReceiver);
+        super.onDestroy();
     }
 }
