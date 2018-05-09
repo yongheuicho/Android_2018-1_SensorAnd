@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String str = bthService.getSerialInput();
                 stSensorInput.appendString(str);
-                txRead.setText(stSensorInput.toString());
+                parseSensor(stSensorInput);
             }
         });
 
@@ -124,6 +124,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bthService = new AceBluetoothSerialService(this, bthAdapter);
+    }
+
+    private void parseSensor(StringTok stSensorInput) {
+        while (stSensorInput.hasLine()) {
+            String sLine = stSensorInput.cutLine();
+            parseSensorLine(sLine);
+        }
+    }
+
+    private void parseSensorLine(String sLine) {
+        StringTok stInput = new StringTok(sLine);
+        StringTok stToken = stInput.getToken(); // Sensor keyword
+        if (stToken.toString().equals("getset")) {
+            stToken = stInput.getToken();   // Sensor #
+            long nSensor = stToken.toLong();
+            stToken = stInput.getToken();   // Sensor value
+            double sensorVal = stToken.toDouble();
+            showMsg(String.format("%d: %g", nSensor, sensorVal));
+        }
     }
 
     @Override
