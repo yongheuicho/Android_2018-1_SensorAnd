@@ -29,9 +29,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
 
 // Modified from "BlueTerm" source code obtained at http://pymasde.es/blueterm/
 
@@ -51,7 +48,8 @@ public class BluetoothSerialService {
     private StreamThread thStream;
     private int nState;
     private Context cxAct;
-    public String sReadBuffer = "";  // Read를 위한 buffer, 외부에서 읽은 후 초기화해야 함
+    public String sReadBuffer;  // Read를 위한 buffer, 외부에서 읽은 후 초기화해야 함
+    private boolean bLockReadBuf;   // Locking boolean for sReadBuffer
 
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
@@ -63,6 +61,8 @@ public class BluetoothSerialService {
         cxAct = context;
         bthAdapter = adapter;
         nState = STATE_NONE;
+        sReadBuffer = "";
+        bLockReadBuf = false;
     }
 
     private synchronized void setState(int state) {
@@ -71,6 +71,14 @@ public class BluetoothSerialService {
 
     public synchronized int getState() {
         return nState;
+    }
+
+    public synchronized void lockReadBuffer() {
+        bLockReadBuf = true;
+    }
+
+    public synchronized void unlockReadBuffer() {
+        bLockReadBuf = false;
     }
 
     /**
@@ -284,11 +292,14 @@ public class BluetoothSerialService {
                         String str = "";
                         for (int i = 0; i < bytes; i++)
                             str += (char) buffer[i];
+                        while (bLockReadBuf) Thread.sleep(1);
                         sReadBuffer += str;
                     }
                 } catch (IOException e) {
                     connectionLost();
                     break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }

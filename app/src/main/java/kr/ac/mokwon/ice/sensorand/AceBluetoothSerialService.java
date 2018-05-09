@@ -1,9 +1,10 @@
 package kr.ac.mokwon.ice.sensorand;
 
-/**
- * Created by 510 on 2018-05-02.
- */
-
+/*-------------------------------------------------------------------
+  AceBluetoothSerialService.h: ACE Bluetooth Serial Service Extended Using BluetoothSerialService
+  Copyright ⓒ 2016-Forever ACE Lab, Korea.
+  All Rights Reserved. Personal and non-commercial purpose only.
+  -------------------------------------------------------------------*/
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 
@@ -13,8 +14,10 @@ public class AceBluetoothSerialService extends BluetoothSerialService {
     }
 
     public String getSerialInput() {
+        lockReadBuffer();
         String str = sReadBuffer;
         sReadBuffer = "";
+        unlockReadBuffer();
         return str;
     }
 
