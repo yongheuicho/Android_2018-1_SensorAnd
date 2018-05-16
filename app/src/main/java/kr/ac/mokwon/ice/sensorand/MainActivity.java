@@ -143,14 +143,35 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                connectBth();
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                repeatConnectBth(10, 100000);
             }
         }).start(); // Non-blocking execution
+    }
+
+    private void repeatConnectBth(int nRepeat, int millis) {
+        for (int i = 0; i < nRepeat; i++) {
+            connectBthWithMsg();
+            try {
+                Thread.sleep(millis);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (bthService.getState() == AceBluetoothSerialService.STATE_CONNECTED)
+            {
+                break;
+            }
+            else {
+
+            }
+        }
+
+    }
+
+    private void connectBthWithMsg() {
+        if (!bthReceiver.sAddress.isEmpty()) {
+            bthDevice = bthAdapter.getRemoteDevice(bthReceiver.sAddress);
+            bthService.connect(bthDevice);
+        }
     }
 
     private void connectBth() {
