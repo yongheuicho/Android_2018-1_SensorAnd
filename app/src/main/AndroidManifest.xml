@@ -24,6 +24,10 @@
         <receiver
             android:name=".BthReceiver"
             android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".StateReceiver"
+            android:enabled="true"
             android:exported="true"></receiver>
     </application>
 

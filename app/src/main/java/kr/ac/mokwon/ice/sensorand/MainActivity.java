@@ -20,15 +20,18 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private static final int BTH_ENABLE = 1010;
+    private static final String BTH_CONN_OK = "mokwon.ice.conn.ok";
+    private static final String BTH_CONN_FAIL = "mokwon.ice.conn.fail";
     protected String sBthName = "yhcho";
     protected BluetoothAdapter bthAdapter;
     protected BluetoothDevice bthDevice;
     protected BluetoothManager bthManager;
     protected BthReceiver bthReceiver;
+    protected StateReceiver stateReceiver;
     protected AceBluetoothSerialService bthService;
     protected Button btFind, btConnect, btRead, btWrite, btViewSensor0;
     protected EditText edWrite;
-    protected TextView txRead;
+    protected TextView txRead, txState;
     protected StringTok stSensorInput = new StringTok("");
     protected ArrayList<Double> arSensor0, arSensor1, arSensor2;
 
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         btWrite = (Button) findViewById(R.id.btWrite);
         edWrite = (EditText) findViewById(R.id.edWrite);
         txRead = (TextView) findViewById(R.id.txRead);
+        txState = (TextView) findViewById(R.id.txState);
         btViewSensor0 = (Button) findViewById(R.id.btViewSensor0);
 
         btFind.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +128,12 @@ public class MainActivity extends AppCompatActivity {
         intentFilter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(bthReceiver, intentFilter);
 
+        stateReceiver = new StateReceiver();
+        intentFilter = new IntentFilter(BTH_CONN_OK);
+        registerReceiver(stateReceiver, intentFilter);
+        intentFilter = new IntentFilter(BTH_CONN_FAIL);
+        registerReceiver(stateReceiver, intentFilter);
+
         Set<BluetoothDevice> setDevice = bthAdapter.getBondedDevices();
         if (setDevice != null) {
             for (BluetoothDevice device : setDevice) {
@@ -158,10 +168,13 @@ public class MainActivity extends AppCompatActivity {
             }
             if (bthService.getState() == AceBluetoothSerialService.STATE_CONNECTED)
             {
+                Intent intent = new Intent(BTH_CONN_OK);
+                sendBroadcast(intent);
                 break;
             }
             else {
-
+                Intent intent = new Intent(BTH_CONN_FAIL);
+                sendBroadcast(intent);
             }
         }
 
@@ -214,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         if (bthAdapter.isDiscovering()) bthAdapter.cancelDiscovery();
         unregisterReceiver(bthReceiver);
+        unregisterReceiver(stateReceiver);
         super.onDestroy();
     }
 }
