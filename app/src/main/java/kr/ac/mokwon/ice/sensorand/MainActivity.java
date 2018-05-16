@@ -83,13 +83,7 @@ public class MainActivity extends AppCompatActivity {
         btConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bthReceiver.sAddress.isEmpty()) {
-                    showMsg("MAC address is empty.");
-                } else {
-                    bthDevice = bthAdapter.getRemoteDevice(bthReceiver.sAddress);
-                    bthService.connect(bthDevice);
-                    showMsg(sBthName + " is connected.");
-                }
+                connectBth();
             }
         });
 
@@ -142,9 +136,26 @@ public class MainActivity extends AppCompatActivity {
 
         bthService = new AceBluetoothSerialService(this, bthAdapter);
 
-        arSensor0 = new ArrayList<Double>();
-        arSensor1 = new ArrayList<Double>();
-        arSensor2 = new ArrayList<Double>();
+        arSensor0 = new ArrayList<>();
+        arSensor1 = new ArrayList<>();
+        arSensor2 = new ArrayList<>();
+
+        connectBth();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void connectBth() {
+        if (bthReceiver.sAddress.isEmpty()) {
+            showMsg("MAC address is empty.");
+        } else {
+            bthDevice = bthAdapter.getRemoteDevice(bthReceiver.sAddress);
+            bthService.connect(bthDevice);
+            showMsg(sBthName + " is connected.");
+        }
     }
 
     private void parseSensor(StringTok stSensorInput) {
