@@ -140,12 +140,17 @@ public class MainActivity extends AppCompatActivity {
         arSensor1 = new ArrayList<>();
         arSensor2 = new ArrayList<>();
 
-        connectBth();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                connectBth();
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start(); // Non-blocking execution
     }
 
     private void connectBth() {
