@@ -5,14 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 
 public class StateReceiver extends BroadcastReceiver {
+    protected MainActivity mainActivity;
+
+    StateReceiver(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
- //       throw new UnsupportedOperationException("Not yet implemented");
-        if (intent.getAction().equals("")) {
-
+        //       throw new UnsupportedOperationException("Not yet implemented");
+        String sAction = intent.getAction();
+        if (sAction.equals(MainActivity.BTH_CONN_OK)) {
+            mainActivity.setStateText("Bluetooth 연결 성공");
+        }
+        else if (sAction.equals(MainActivity.BTH_CONN_FAIL)) {
+            mainActivity.setStateText("Bluetooth 연결 실패");
         }
     }
 }
