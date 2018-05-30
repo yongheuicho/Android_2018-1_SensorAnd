@@ -21,7 +21,9 @@ public class StateReceiver extends BroadcastReceiver {
             mainActivity.setStateText("Bluetooth 연결 성공");
         }
         else if (sAction.equals(MainActivity.BTH_CONN_FAIL)) {
-            mainActivity.setStateText("Bluetooth 연결 실패");
+            int nCountFail = intent.getIntExtra(MainActivity.BTH_CONN_FAIL_COUNT, 0);
+            String sCount = String.format("%d회 시도중...", nCountFail);
+            mainActivity.setStateText("Bluetooth 연결 실패: " + sCount);
         }
     }
 }

@@ -21,6 +21,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
     public static final String BTH_CONN_OK = "mokwon.ice.conn.ok";
     public static final String BTH_CONN_FAIL = "mokwon.ice.conn.fail";
+    public static final String BTH_CONN_FAIL_COUNT = "mokwon.ice.conn.fail.count";
     private static final int BTH_ENABLE = 1010;
     protected String sBthName = "yhcho";
     protected BluetoothAdapter bthAdapter;
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             } else {
                 Intent intent = new Intent(BTH_CONN_FAIL);
+                intent.putExtra(BTH_CONN_FAIL_COUNT, i+1);
                 sendBroadcast(intent);
             }
         }
